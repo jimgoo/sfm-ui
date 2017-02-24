@@ -362,7 +362,7 @@ class SeedUpdateView(LoginRequiredMixin, CollectionSetOrSuperuserPermissionMixin
         kwargs = super(SeedUpdateView, self).get_form_kwargs()
         kwargs["collection"] = self.object.collection.pk
         kwargs["view_type"] = Seed.UPDATE_VIEW
-        kwargs["seed_id"] = self.object.seed_id
+        kwargs["entry"] = self.get_object()
         return kwargs
 
     def get_context_data(self, **kwargs):

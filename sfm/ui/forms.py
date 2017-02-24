@@ -478,8 +478,8 @@ class BaseSeedForm(forms.ModelForm):
         self.collection = kwargs.pop("collection", None)
         # for createView and updateView
         self.view_type = kwargs.pop("view_type", None)
-        # for updateView check the updates
-        self.seed_id = kwargs.pop("seed_id", None)
+        # for updateView check the updates for the original token and  uid
+        self.entry = kwargs.pop("entry", None)
         super(BaseSeedForm, self).__init__(*args, **kwargs)
         cancel_url = reverse('collection_detail', args=[self.collection])
 
@@ -527,13 +527,12 @@ class SeedTwitterUserTimelineForm(BaseSeedForm):
 
         # for the update view
         if self.view_type == Seed.UPDATE_VIEW:
-            seed = Seed.objects.filter(collection=self.collection, seed_id=self.seed_id)
-            # check screen name
-            if ctoken != seed[0].token and ctoken and Seed.objects.filter(collection=self.collection,
+            # check updated screen name exist in db if changes
+            if ctoken != self.entry.token and ctoken and Seed.objects.filter(collection=self.collection,
                                                                           token=ctoken).exists():
                 raise ValidationError("Screen name already exist.")
-            # check uid
-            if cuid != seed[0].uid and cuid and Seed.objects.filter(collection=self.collection, uid=cuid).exists():
+            # check updated uid whether exist in db if changes
+            if cuid != self.entry.uid and cuid and Seed.objects.filter(collection=self.collection, uid=cuid).exists():
                 raise ValidationError("Uid already exist.")
         else:
             if ctoken and Seed.objects.filter(collection=self.collection, token=ctoken).exists():
