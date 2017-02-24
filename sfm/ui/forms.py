@@ -476,6 +476,10 @@ class BaseSeedForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.collection = kwargs.pop("collection", None)
+        # for createView and updateView
+        self.view_type = kwargs.pop("view_type", None)
+        # for updateView check the updates
+        self.seed_id = kwargs.pop("seed_id", None)
         super(BaseSeedForm, self).__init__(*args, **kwargs)
         cancel_url = reverse('collection_detail', args=[self.collection])
 
@@ -513,6 +517,36 @@ class SeedTwitterUserTimelineForm(BaseSeedForm):
     def __init__(self, *args, **kwargs):
         super(SeedTwitterUserTimelineForm, self).__init__(*args, **kwargs)
         self.helper.layout[0][0].extend(('token', 'uid'))
+
+    def clean(self):
+        cuid = self.cleaned_data.get("uid")
+        ctoken = clean_token(self.cleaned_data.get("token"))
+        # should not both empty
+        if not cuid and not ctoken:
+            raise ValidationError('Uid or Screen name is required.')
+
+        # for the update view
+        if self.view_type == Seed.UPDATE_VIEW:
+            seed = Seed.objects.filter(collection=self.collection, seed_id=self.seed_id)
+            # check screen name
+            if ctoken != seed[0].token and ctoken and Seed.objects.filter(collection=self.collection,
+                                                                          token=ctoken).exists():
+                raise ValidationError("Screen name already exist.")
+            # check uid
+            if cuid != seed[0].uid and cuid and Seed.objects.filter(collection=self.collection, uid=cuid).exists():
+                raise ValidationError("Uid already exist.")
+        else:
+            if ctoken and Seed.objects.filter(collection=self.collection, token=ctoken).exists():
+                raise ValidationError("Screen name already exist.")
+
+            if cuid and Seed.objects.filter(collection=self.collection, uid=cuid).exists():
+                raise ValidationError("Uid already exist.")
+        # check the format
+        if ctoken and ctoken.isdigit():
+            raise ValidationError('Screen name may not be numeric.')
+
+        if cuid and not cuid.isdigit():
+            raise ValidationError('Uid should be numeric.')
 
     def clean_token(self):
         return clean_token(self.cleaned_data.get("token"))
@@ -626,7 +660,7 @@ class SeedFlickrUserForm(BaseSeedForm):
 
 class SeedTumblrBlogPostsForm(BaseSeedForm):
     class Meta(BaseSeedForm.Meta):
-        fields = ['uid','token']
+        fields = ['uid', 'token']
         fields.extend(BaseSeedForm.Meta.fields)
         labels = dict(BaseSeedForm.Meta.labels)
         labels["uid"] = "Blog hostname"

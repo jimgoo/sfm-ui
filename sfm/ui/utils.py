@@ -86,7 +86,8 @@ def clean_token(token):
     """
     if token is None:
         return None
-    stripped_token = token.strip()
+    # all save as lowercase
+    stripped_token = token.strip().lower()
     return stripped_token[1:] if stripped_token.startswith('@') else stripped_token
 
 

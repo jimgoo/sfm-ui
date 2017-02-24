@@ -460,6 +460,8 @@ class SeedHistoryModel(models.Model):
 
 @python_2_unicode_compatible
 class Seed(models.Model):
+    UPDATE_VIEW = "updateView"
+    CREATE_VIEW = "createView"
     collection = models.ForeignKey(Collection, related_name='seeds')
     seed_id = models.CharField(max_length=32, unique=True, default=default_uuid)
     token = models.TextField(blank=True)

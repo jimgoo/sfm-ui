@@ -337,6 +337,7 @@ class SeedCreateView(LoginRequiredMixin, CollectionSetOrSuperuserPermissionMixin
     def get_form_kwargs(self):
         kwargs = super(SeedCreateView, self).get_form_kwargs()
         kwargs["collection"] = self.kwargs["collection_pk"]
+        kwargs["view_type"] = Seed.CREATE_VIEW
         return kwargs
 
     def get_form_class(self):
@@ -360,6 +361,8 @@ class SeedUpdateView(LoginRequiredMixin, CollectionSetOrSuperuserPermissionMixin
     def get_form_kwargs(self):
         kwargs = super(SeedUpdateView, self).get_form_kwargs()
         kwargs["collection"] = self.object.collection.pk
+        kwargs["view_type"] = Seed.UPDATE_VIEW
+        kwargs["seed_id"] = self.object.seed_id
         return kwargs
 
     def get_context_data(self, **kwargs):
