@@ -97,7 +97,7 @@ $(document).ready(function(){
                 </a>
                 <ul class="dropdown-menu">
                     {% for harvest_type, harvest_label in harvest_types %}
-                        <li><a data-toggle="tooltip" data-placement="right" title="{{ harvest_description|get_dict_item:harvest_type }}"
+                        <li><a data-toggle="tooltip" data-placement="right" title="{{ harvest_description|get_item:harvest_type }}"
                                href="{% url "collection_create" collection_set.id harvest_type %}">Add {{ harvest_label }}</a></li>
                     {% endfor %}          
                 </ul>
