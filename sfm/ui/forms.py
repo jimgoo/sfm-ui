@@ -520,9 +520,16 @@ class BaseSeedForm(forms.ModelForm):
         if "token" in fields:
             token_val = self.cleaned_data.get("token")
             token_label = self._meta.labels["token"]
+
+        # if has invalid error before, directly not check deep error
+        if self.errors:
+            return
+
         # should not both empty if has token or uid fields, the twitter filter should deal with separately
         if (uid_label or token_label) and (not uid_val and not token_val):
-            raise ValidationError(u'One of the following fields is required :{} {}.'.format(token_label, uid_label))
+            or_text = 'or' * (1 if uid_label and token_label else 0)
+            raise ValidationError(
+                u'One of the following fields is required :{} {} {}.'.format(token_label, or_text, uid_label))
 
         # for the update view
         if self.view_type == Seed.UPDATE_VIEW:
@@ -565,14 +572,14 @@ class SeedTwitterUserTimelineForm(BaseSeedForm):
         uid_val = self.cleaned_data.get("uid")
         # check the format
         if uid_val and not uid_val.isdigit():
-            raise ValidationError('Uid should be numeric.')
+            raise ValidationError('Uid should be numeric.', code='invalid')
         return uid_val
 
     def clean_token(self):
         token_val = clean_token(self.cleaned_data.get("token"))
         # check the format
         if token_val and token_val.isdigit():
-            raise ValidationError('Screen name may not be numeric.')
+            raise ValidationError('Screen name may not be numeric.', code='invalid')
         return token_val
 
 
