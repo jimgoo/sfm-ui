@@ -26,6 +26,7 @@ PERFORM_SERIALIZE = False
 
 ADMINS = [("sfmadmin", "superuser@test.com")]
 
+DEFAULT_LEVEL = 'INFO'
 
 LOGGING = {
     'version': 1,
@@ -44,17 +45,17 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'INFO',
+            'level': DEFAULT_LEVEL,
             'propagate': True,
         },
         'django.request': {
             'handlers': ['console'],
-            'level': 'INFO',
+            'level': DEFAULT_LEVEL,
             'propagate': True,
         },
         'apscheduler': {
             'handlers': ['console'],
-            'level': 'INFO',
+            'level': DEFAULT_LEVEL,
             'propagate': True,
         },
         'ui': {

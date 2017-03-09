@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.twitter',
     'allauth.socialaccount.providers.weibo',
     'allauth.socialaccount.providers.tumblr',
+    'allauth.socialaccount.providers.instagram',
     'crispy_forms',                 # for django crispy forms
     'apscheduler',                  # Scheduler
     'message_consumer',             # Message Consumer

@@ -11,7 +11,7 @@ from django.core.exceptions import PermissionDenied
 
 import logging
 
-from .forms import CredentialTwitterForm, CredentialWeiboForm, CredentialTumblrForm
+from .forms import CredentialTwitterForm, CredentialWeiboForm, CredentialTumblrForm, CredentialInstagramForm
 from .models import Credential, CollectionSet
 
 log = logging.getLogger(__name__)
@@ -53,6 +53,12 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
                 'platform': Credential.WEIBO,
                 'access_token': sociallogin.token.token,
             })
+        elif sociallogin.token.app.provider == 'instagram':
+            form = CredentialInstagramForm({
+                'name': credential_name,
+                'platform': Credential.INSTAGRAM,
+                'access_token': sociallogin.token.token,
+            })
         else:
             assert False, "Unrecognized social login provider"
         form.instance.user = request.user
@@ -86,7 +92,7 @@ def has_collection_set_based_permission(obj, user, allow_superuser=True, allow_s
 
 
 def check_collection_set_based_permission(obj, user, allow_superuser=True, allow_staff=False):
-    log.info(has_collection_set_based_permission(obj, user, allow_superuser=allow_superuser, allow_staff=allow_staff))
+    #log.info(has_collection_set_based_permission(obj, user, allow_superuser=allow_superuser, allow_staff=allow_staff))
     if not has_collection_set_based_permission(obj, user, allow_superuser=allow_superuser, allow_staff=allow_staff):
         log.warning("Permission denied for %s", user)
         raise PermissionDenied()

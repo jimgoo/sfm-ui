@@ -866,6 +866,61 @@ class CredentialWeiboForm(BaseCredentialForm):
         m.save()
         return m
 
+# class CredentialInstagramForm(BaseCredentialForm):
+#     access_token = forms.CharField(required=True)
+
+#     def __init__(self, *args, **kwargs):
+#         super(CredentialInstagramForm, self).__init__(*args, **kwargs)
+#         self.helper.layout[0][1].extend(['access_token'])
+
+#         if self.instance and self.instance.token:
+#             token = json.loads(self.instance.token)
+#             self.fields['access_token'].initial = token.get('access_token')
+
+#     def to_token(self):
+#         return {
+#             "access_token": self.cleaned_data["access_token"].strip(),
+#         }
+
+#     def save(self, commit=True):
+#         m = super(CredentialInstagramForm, self).save(commit=False)
+#         m.platform = Credential.INSTAGRAM
+#         m.token = json.dumps(self.to_token())
+#         m.save()
+#         return m
+
+class CredentialInstagramForm(BaseCredentialForm):
+    consumer_key = forms.CharField(required=True)
+    consumer_secret = forms.CharField(required=True)
+    access_token = forms.CharField(required=True)
+    #access_token_secret = forms.CharField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(CredentialInstagramForm, self).__init__(*args, **kwargs)
+        self.helper.layout[0][1].extend(['consumer_key', 'consumer_secret', 'access_token']) #, 'access_token_secret'])
+        if self.instance and self.instance.token:
+            token = json.loads(self.instance.token)
+            self.fields['consumer_key'].initial = token.get('consumer_key')
+            self.fields['consumer_secret'].initial = token.get('consumer_secret')
+            self.fields['access_token'].initial = token.get('access_token')
+            #self.fields['access_token_secret'].initial = token.get('access_token_secret')
+
+    def to_token(self):
+        return {
+            "consumer_key": self.cleaned_data["consumer_key"].strip(),
+            "consumer_secret": self.cleaned_data["consumer_secret"].strip(),
+            "access_token": self.cleaned_data["access_token"].strip(),
+            #"access_token_secret": self.cleaned_data["access_token_secret"].strip(),
+        }
+
+    def save(self, commit=True):
+        m = super(CredentialInstagramForm, self).save(commit=False)
+        m.platform = Credential.INSTAGRAM
+        m.token = json.dumps(self.to_token())
+        m.save()
+        return m
+
+
 
 # sizes = forms.MultipleChoiceField(choices=SIZE_OPTIONS, initial=("Thumbnail", "Large", "Original"),
 #                                   widget=forms.CheckboxSelectMultiple, label="Image sizes", )

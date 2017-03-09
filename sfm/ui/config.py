@@ -34,7 +34,7 @@ class UIConfig(AppConfig):
 
         # Add 5 minute interval
         if settings.FIVE_MINUTE_SCHEDULE:
-            log.debug("Adding 5 minute timer")
+            log.info('\nAdding 5 min timer\n')
             Collection.SCHEDULE_CHOICES.append((5, "Every 5 minutes"))
 
         # Add 5 minute interval

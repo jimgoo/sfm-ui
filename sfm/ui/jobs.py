@@ -31,7 +31,7 @@ def collection_harvest(collection_pk):
             return
 
         if not collection.is_active:
-            log.debug("Ignoring Harvest for collection as collection %s is inactive", collection_pk)
+            log.info("Ignoring Harvest for collection as collection %s is inactive", collection_pk)
             return
 
         historical_collection = collection.history.all()[0]
@@ -41,7 +41,7 @@ def collection_harvest(collection_pk):
             if seed.is_active:
                 historical_seeds.append(seed.history.all()[0])
             else:
-                log.debug("Seed %s is ignored from the harvest as it is inactive", seed)
+                log.info("Seed %s is ignored from the harvest as it is inactive", seed)
 
         # Make sure that have the correct number of seeds.
         required_seed_count = collection.required_seed_count()
@@ -96,7 +96,10 @@ def collection_harvest(collection_pk):
 
         # Skip this harvest if last harvest not completed or voided
         last_harvest = collection.last_harvest()
-        if not last_harvest or last_harvest.status in (Harvest.SUCCESS, Harvest.FAILURE, Harvest.VOIDED):
+        if last_harvest is not None:
+            log.info("Last harvest status was '%s'" % last_harvest.status)
+
+        if True: #not last_harvest or last_harvest.status in (Harvest.SUCCESS, Harvest.FAILURE, Harvest.VOIDED):
             # Record harvest model instance
             harvest = Harvest.objects.create(harvest_type=harvest_type,
                                              harvest_id=harvest_id,
@@ -105,7 +108,7 @@ def collection_harvest(collection_pk):
                                              historical_credential=historical_credential)
             harvest.historical_seeds.add(*historical_seeds)
         else:
-            log.debug("Skipping harvest with id %s", harvest_id)
+            log.info("Skipping harvest with id %s" % harvest_id)
 
             # Set message to None to indicate that should not be sent
             message = None
@@ -136,7 +139,7 @@ def collection_harvest(collection_pk):
 
                 if receiver_emails:
                     try:
-                        log.debug("Sending email to %s: %s", receiver_emails, mail_subject)
+                        log.info("Sending email to %s: %s", receiver_emails, mail_subject)
                         send_mail(mail_subject, mail_message, settings.EMAIL_HOST_USER,
                                   receiver_emails, fail_silently=False)
                     except SMTPException, ex:
@@ -146,8 +149,7 @@ def collection_harvest(collection_pk):
 
     # Send message outside the transaction
     if message:
-        log.debug("Sending %s message to %s with id %s", harvest_type,
-                  routing_key, harvest_id)
+        log.info("----> Sending %s message to %s with id %s", harvest_type, routing_key, harvest_id)
 
         # Publish message to queue via rabbit worker
         RabbitWorker().send_message(message, routing_key)
@@ -164,7 +166,7 @@ def collection_stop(collection_id):
     harvest = collection.last_harvest()
     assert collection.is_streaming()
     if harvest is None or harvest.status not in (Harvest.REQUESTED, Harvest.RUNNING, Harvest.FAILURE):
-        log.debug("Ignoring stop harvest of collection since %s does not have a running harvest.")
+        log.info("Ignoring stop harvest of collection since %s does not have a running harvest.")
         return
 
     message = {
@@ -173,12 +175,13 @@ def collection_stop(collection_id):
 
     routing_key = "harvest.stop.{}.{}".format(harvest.historical_credential.platform, harvest.harvest_type)
 
-    log.debug("Sending %s stop message to %s with id %s", harvest.harvest_type, routing_key, harvest.harvest_id)
+    log.info("----> Sending %s stop message to %s with id %s", harvest.harvest_type, routing_key, harvest.harvest_id)
 
     # Publish message to queue via rabbit worker
     RabbitWorker().send_message(message, routing_key)
 
     # Update harvest model instance
     if harvest.status in (Harvest.REQUESTED, Harvest.RUNNING):
-        harvest.status = Harvest.STOP_REQUESTED
+        #harvest.status = Harvest.STOP_REQUESTED
+        harvest.status = Harvest.SUCCESS
         harvest.save()

@@ -130,7 +130,7 @@ class Harvest(a.ModelAdmin):
     readonly_fields = ('historical_collection', 'historical_seeds', 'historical_credential', 'parent_harvest')
     list_display = ['id', 'harvest_id', 'harvest_type',
                     'collection', 'status', 'date_requested',
-                    'date_updated']
+                    'date_updated', 'warcs_count', 'warcs_bytes']
     list_filter = ['collection__name', 'harvest_type', 'status', 'date_requested', 'date_updated']
     search_fields = ['harvest_id']
 

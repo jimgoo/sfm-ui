@@ -507,6 +507,7 @@ class CredentialListView(LoginRequiredMixin, ListView):
         context["can_connect_twitter"] = self._can_connect_credential(Credential.TWITTER)
         context["can_connect_weibo"] = self._can_connect_credential(Credential.WEIBO)
         context["can_connect_tumblr"] = self._can_connect_credential(Credential.TUMBLR)
+        context["can_connect_instagram"] = self._can_connect_credential(Credential.INSTAGRAM)
         return context
 
     @staticmethod

@@ -102,11 +102,13 @@ class Credential(models.Model):
     FLICKR = "flickr"
     WEIBO = "weibo"
     TUMBLR = "tumblr"
+    INSTAGRAM = "instagram"
     PLATFORM_CHOICES = [
         (TWITTER, 'Twitter'),
         (FLICKR, 'Flickr'),
         (WEIBO, 'Weibo'),
-        (TUMBLR, "Tumblr")
+        (TUMBLR, "Tumblr"),
+        (INSTAGRAM, "Instagram")
     ]
     credential_id = models.CharField(max_length=32, unique=True, default=default_uuid)
     name = models.CharField(max_length=255, verbose_name='Credential name')
@@ -561,10 +563,10 @@ class Harvest(models.Model):
     warcs_count = models.PositiveIntegerField(default=0)
     warcs_bytes = models.BigIntegerField(default=0)
     # These identify who is doing the harvest
-    service = models.CharField(max_length=255, null=True)
-    host = models.CharField(max_length=255, null=True)
+    service = models.CharField(max_length=255, null=True, blank=True)
+    host = models.CharField(max_length=255, null=True, blank=True)
     # Since a host may have multiple instances of a harvester, this identifies which. Might be a PID.
-    instance = models.CharField(max_length=255, null=True)
+    instance = models.CharField(max_length=255, null=True, blank=True)
 
     objects = HarvestManager()
 

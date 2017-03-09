@@ -30,6 +30,8 @@ if 'SFM_SITE_ADMIN_EMAIL' in env:
 
 STATIC_ROOT = "/opt/sfm-static"
 
+DEFAULT_LEVEL = 'INFO'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -47,27 +49,27 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': env.get('SFM_DJANGO_LOG', 'INFO'),
+            'level': env.get('SFM_DJANGO_LOG', DEFAULT_LEVEL),
             'propagate': True,
         },
         'django.request': {
             'handlers': ['console'],
-            'level': env.get('SFM_DJANGO_REQUEST_LOG', 'INFO'),
+            'level': env.get('SFM_DJANGO_REQUEST_LOG', DEFAULT_LEVEL),
             'propagate': True,
         },
         'apscheduler': {
             'handlers': ['console'],
-            'level': env.get('SFM_APSCHEDULER_LOG', 'INFO'),
+            'level': env.get('SFM_APSCHEDULER_LOG', DEFAULT_LEVEL),
             'propagate': True,
         },
         'ui': {
             'handlers': ['console'],
-            'level': env.get('SFM_UI_LOG', 'INFO'),
+            'level': env.get('SFM_UI_LOG', DEFAULT_LEVEL),
             'propagate': True,
         },
         'message_consumer': {
             'handlers': ['console'],
-            'level': env.get('SFM_UI_LOG', 'INFO'),
+            'level': env.get('SFM_UI_LOG', DEFAULT_LEVEL),
             'propagate': True,
         },
     },
