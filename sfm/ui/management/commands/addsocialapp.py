@@ -25,9 +25,9 @@ class Command(BaseCommand):
                 site.save()
                 self.stdout.write('Created {} social app.'.format(options['provider']))
             else:
-                app.client_id = options['client_id']
-                app.secret = options['secret']
-                app.save()
+                #app.client_id = options['client_id']
+                #app.secret = options['secret']
+                #app.save() # QuerySet cannot be saved
                 self.stdout.write(
                     'Skipping creating {} social app since it already exists.'.format(options['provider']))
 
