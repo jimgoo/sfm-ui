@@ -13,7 +13,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options['client_id'] and options['secret']:
-            if not SocialApp.objects.filter(provider=options['provider']).exists():
+            app = SocialApp.objects.filter(provider=options['provider'])
+            if not app.exists():
                 social_app = SocialApp.objects.create(provider=options['provider'],
                                                       client_id=options['client_id'],
                                                       secret=options['secret'],
@@ -24,6 +25,9 @@ class Command(BaseCommand):
                 site.save()
                 self.stdout.write('Created {} social app.'.format(options['provider']))
             else:
+                app.client_id = options['client_id']
+                app.secret = options['secret']
+                app.save()
                 self.stdout.write(
                     'Skipping creating {} social app since it already exists.'.format(options['provider']))
 
