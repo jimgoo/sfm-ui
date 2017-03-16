@@ -875,7 +875,8 @@ class CredentialWeiboForm(BaseCredentialForm):
 
 #         if self.instance and self.instance.token:
 #             token = json.loads(self.instance.token)
-#             self.fields['access_token'].initial = token.get('access_token')
+#             se
+lf.fields['access_token'].initial = token.get('access_token')
 
 #     def to_token(self):
 #         return {
