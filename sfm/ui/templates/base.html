@@ -53,15 +53,15 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{% url 'home' %}">Social Feed Manager (Fork)</a>
+          <a class="navbar-brand" href="{% url 'home' %}">SMM (JDG)</a>
         </div>
           
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
           {% if request.user.is_authenticated %} 
             <ul class="nav navbar-nav">
-	            <li><a href={% url "collection_set_list" %}>Collection Sets</a></li>
-	            <li><a href={% url "credential_list" %}>Credentials</a></li>
+                <li><a href={% url "credential_list" %}>Credentials</a></li>  
+	              <li><a href={% url "collection_set_list" %}>Collection Sets</a></li>
                 <li><a href={% url "export_list" %}>Exports</a></li>
                 <li><a href={% url "monitor" %}>Monitor</a></li>
             </ul>
@@ -100,7 +100,10 @@
 
     </div> <!-- /container -->
     {% block modal %}{% endblock modal %}
-    <footer class="footer">
+
+    <!-- <JDG> killed footer -->
+    {% comment %}
+<!--     <footer class="footer">
         <div class="footer-upper">
             <hr>
             <a class="footer-blue" href="{% url 'home' %}">SFM UI {{ SFM_UI_VERSION }}</a>
@@ -123,7 +126,8 @@
                 <strong><a href={{ INSTITUTION_LINK }} title="institution-name" target="_blank">{{ INSTITUTION_NAME }}</a></strong>
             </p>
         </div>
-    </footer>
+    </footer> -->
+    {% endcomment %}
 
 </body>
 </html>
